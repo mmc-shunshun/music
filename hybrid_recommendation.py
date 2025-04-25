@@ -44,14 +44,8 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         'Artists': [music_df.loc[music_df['Track Name'] == input_song_name, 'Artists'].values[0]],
         'Album Name': [music_df.loc[music_df['Track Name'] == input_song_name, 'Album Name'].values[0]],
         'Release Date': [music_df.loc[music_df['Track Name'] == input_song_name, 'Release Date'].values[0]],
-        'Popularity': [weighted_popularity_score],
-        'External URLs': [music_df.loc[music_df['Track Name'] == input_song_name, 'External URLs'].values[0]]
+        'Popularity': [weighted_popularity_score]
     })
-
-    # Add External URLs to content-based recommendations
-    content_based_rec['External URLs'] = content_based_rec['Track Name'].apply(
-        lambda name: music_df.loc[music_df['Track Name'] == name, 'External URLs'].values[0]
-    )
 
     hybrid_recommendations = pd.concat([content_based_rec, weighted_pop_df], ignore_index=True)
 
@@ -65,30 +59,13 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
 
     return hybrid_recommendations
 
-st.header("Music Recommendation System")
+st.header("Content-Type")
 text = st.selectbox(
     'Select music you want recommendation for', 
     music_df['Track Name'].values,
     key='song_selector'
 )
 
-if st.button("Recommend"):
+if st.button("Recommend", key="recommend_button"):
     df = hybrid_recommendations(text)
-
-    # Convert Track Name to clickable links
-    df['Track Name'] = df.apply(
-        lambda row: f"[{row['Track Name']}]({row['External URLs']})", axis=1
-    )
-
-    # Drop the raw URL column for display
-    df_display = df.drop(columns=['External URLs'])
-
-    # Reset index from 1 instead of 0
-    df_display.index = np.arange(1, len(df_display) + 1)
-    df_display.index.name = "No."
-
-    # Display table
-    st.markdown("### Recommended Songs")
-    st.write("Click the song title to listen on the external platform:")
-    st.write(df_display.to_markdown(), unsafe_allow_html=True)
-
+    st.dataframe(df)

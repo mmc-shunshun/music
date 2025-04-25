@@ -47,8 +47,8 @@ def content_based_recommendations(input_song_name, num_recommendations=5):
 
     return content_based_recommendations
 
-st.header("Music Recommendation")
-text = st.selectbox('Select music you want recommendation for', 
+st.header("Content-Type")
+text = st.selectbox('Select movie you want recommendation for', 
                     music_df['Track Name'].values)
 
 if st.button("Recommend"):
