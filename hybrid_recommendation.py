@@ -4,6 +4,8 @@ from datetime import datetime
 import streamlit as st
 from contentbasedrecommendation import content_based_recommendations 
 
+st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
+
 music_df = pd.read_csv('music.csv')
 
 # Function to calculate weighted popularity scores based on release date
@@ -56,13 +58,9 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     # Remove the input song from the recommendations
     hybrid_recommendations = hybrid_recommendations[hybrid_recommendations['Track Name'] != input_song_name]
 
-    hybrid_recommendations['Track Name'] = hybrid_recommendations.apply(
-        lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>', axis=1
-    )
 
     return hybrid_recommendations
 
-st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
 
 st.markdown("<h1 style='text-align: center; color: #4A90E2;'>🎵 Intelligent Music Recommender</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'>Get personalized song recommendations based on your selection and popularity trends.</p>", unsafe_allow_html=True)
