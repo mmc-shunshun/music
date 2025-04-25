@@ -8,8 +8,6 @@ from datetime import datetime
 
 from contentbasedrecommendation import content_based_recommendations 
 
-st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
-
 music_df = pd.read_csv('music.csv')
 
 # Function to calculate weighted popularity scores based on release date
@@ -94,12 +92,12 @@ if st.button("🔍 Recommend"):
             lambda row: f"<a href='{row['External URLs']}' target='_blank'>{row['Track Name']}</a>" if pd.notna(row['External URLs']) else row['Track Name'],
             axis=1
         )
-        st.markdown(df.to_html(escape=False, index=True), unsafe_allow_html=True)
-        df.index = np.arange(1, len(df) + 1)
-        df.index.name = "No."
-        st.dataframe(df.style.format({"Popularity": "{:.2f}"}), use_container_width=True)
-    else:
-        st.info("🤔 No recommendations found. Try selecting another song.")
+    df.index = np.arange(1, len(df) + 1)
+    df.index.name = "No."
+
+    # ✅ Render as HTML with clickable links
+    st.markdown(df.to_html(escape=False), unsafe_allow_html=True)
+
 
 # Footer
 st.markdown("---")
