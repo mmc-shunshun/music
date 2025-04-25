@@ -45,7 +45,6 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         'Album Name': [music_df.loc[music_df['Track Name'] == input_song_name, 'Album Name'].values[0]],
         'Release Date': [music_df.loc[music_df['Track Name'] == input_song_name, 'Release Date'].values[0]],
         'Popularity': [weighted_popularity_score]
-
     })
 
     hybrid_recommendations = pd.concat([content_based_rec, weighted_pop_df], ignore_index=True)
@@ -64,17 +63,9 @@ st.header("Content-Type")
 text = st.selectbox(
     'Select music you want recommendation for', 
     music_df['Track Name'].values,
-    key='song_selector_2'
+    key='song_selector'
 )
 
 if st.button("Recommend", key="recommend_button"):
     df = hybrid_recommendations(text)
-
-    if not df.empty:
-     df['Track Name'] = df.apply(
-            lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>',
-            axis=1
-        )
-     display_df = df.drop(columns=['External URLs'])
-
     st.dataframe(df)
