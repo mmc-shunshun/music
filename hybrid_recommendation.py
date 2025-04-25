@@ -1,6 +1,4 @@
 import streamlit as st
-st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
-
 import pandas as pd
 import numpy as np
 from datetime import datetime
