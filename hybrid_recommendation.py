@@ -60,7 +60,7 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>', axis=1
     )
 
-    return hybrid_recommendations[['Track Name', 'Artists', 'Album Name', 'Release Date', 'Popularity']]
+    return hybrid_recommendations
 
 st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
 
