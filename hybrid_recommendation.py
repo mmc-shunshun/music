@@ -75,27 +75,20 @@ text = st.selectbox(
 if st.button("Recommend"):
     df = hybrid_recommendations(text)
 
-   # Convert Track Name to HTML hyperlink
-df['Track Name'] = df.apply(
-    lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>',
-    axis=1
-)
+    # Convert Track Name to clickable links
+    df['Track Name'] = df.apply(
+        lambda row: f"[{row['Track Name']}]({row['External URLs']})", axis=1
+    )
 
-# Drop External URLs for cleaner view
-df_display = df.drop(columns=['External URLs'])
+    # Drop the raw URL column for display
+    df_display = df.drop(columns=['External URLs'])
 
-# Reset index from 1
-df_display.index = np.arange(1, len(df_display) + 1)
-df_display.index.name = "No."
+    # Reset index from 1 instead of 0
+    df_display.index = np.arange(1, len(df_display) + 1)
+    df_display.index.name = "No."
 
-# Display interactive HTML table
-st.markdown("Recommended Songs")
-st.markdown("Click on a song title to listen on an external platform.")
-
-# Render HTML-formatted dataframe using st.write with unsafe HTML
-st.write(
-    df_display.to_html(escape=False),
-    unsafe_allow_html=True
-)
-
+    # Display table
+    st.markdown("### Recommended Songs")
+    st.write("Click the song title to listen on the external platform:")
+    st.write(df_display.to_markdown(), unsafe_allow_html=True)
 
