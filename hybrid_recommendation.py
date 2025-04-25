@@ -47,11 +47,6 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         'External URLs': [music_df.loc[music_df['Track Name'] == input_song_name, 'External URLs'].values[0]]
     })
 
-
-    content_based_rec['External URLs'] = content_based_rec['Track Name'].apply(
-        lambda name: music_df.loc[music_df['Track Name'] == name, 'External URLs'].values[0]
-    )
-
     hybrid_recommendations = pd.concat([content_based_rec, weighted_pop_df], ignore_index=True)
 
     # Sort the hybrid recommendations based on weighted popularity score
@@ -61,7 +56,9 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     # Remove the input song from the recommendations
     hybrid_recommendations = hybrid_recommendations[hybrid_recommendations['Track Name'] != input_song_name]
 
-   
+    hybrid_recommendations['Track Name'] = hybrid_recommendations.apply(
+        lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>', axis=1
+    )
 
     return hybrid_recommendations
 
@@ -82,12 +79,6 @@ selected_track = st.selectbox(
 if st.button("🔍 Recommend"):
     st.markdown("#### 📃 Top Recommendations:")
     df = hybrid_recommendations(selected_track)
-    df['Track Name'] = df.apply(
-        lambda row: f"[{row['Track Name']}]({row['External URLs']})", axis=1
-    )
-
-    # Drop the raw URL column for display
-    df_display = df.drop(columns=['External URLs'])
 
     if not df.empty:
         df.index = np.arange(1, len(df) + 1)
