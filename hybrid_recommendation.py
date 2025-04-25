@@ -1,7 +1,11 @@
+import streamlit as st
+st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
+
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import streamlit as st
+
+
 from contentbasedrecommendation import content_based_recommendations 
 
 st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
@@ -87,9 +91,10 @@ if st.button("🔍 Recommend"):
 
     if not df.empty:
         df['Track Name'] = df.apply(
-            lambda row: f"[{row['Track Name']}]({row['External URLs']})" if pd.notna(row['External URLs']) else row['Track Name'],
+            lambda row: f"<a href='{row['External URLs']}' target='_blank'>{row['Track Name']}</a>" if pd.notna(row['External URLs']) else row['Track Name'],
             axis=1
         )
+        st.markdown(df.to_html(escape=False, index=True), unsafe_allow_html=True)
         df.index = np.arange(1, len(df) + 1)
         df.index.name = "No."
         st.dataframe(df.style.format({"Popularity": "{:.2f}"}), use_container_width=True)
