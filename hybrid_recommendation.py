@@ -59,13 +59,31 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
 
     return hybrid_recommendations
 
-st.header("🎶 Music Recommendation System")
-text = st.selectbox(
-    'Select music you want recommendation for', 
-    music_df['Track Name'].values,
+st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
+
+st.markdown("<h1 style='text-align: center; color: #4A90E2;'>🎵 Intelligent Music Recommender</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Get personalized song recommendations based on your selection and popularity trends.</p>", unsafe_allow_html=True)
+st.markdown("---")
+
+# Dropdown Selection
+selected_track = st.selectbox(
+    '🎼 Choose a song you like:',
+    sorted(music_df['Track Name'].unique()),
     key='song_selector_2'
 )
 
-if st.button("Recommend", key="recommend_button"):
-    df = hybrid_recommendations(text)
-    st.dataframe(df)
+# Recommend Button
+if st.button("🔍 Recommend"):
+    st.markdown("#### 📃 Top Recommendations:")
+    df = hybrid_recommendations(selected_track)
+
+    if not df.empty:
+        df.index = np.arange(1, len(df) + 1)
+        df.index.name = "No."
+        st.dataframe(df.style.format({"Popularity": "{:.2f}"}), use_container_width=True)
+    else:
+        st.info("🤔 No recommendations found. Try selecting another song.")
+
+# Footer
+st.markdown("---")
+st.markdown("<p style='text-align: center; font-size: 13px;'>Built with ❤️ using Streamlit</p>", unsafe_allow_html=True)
