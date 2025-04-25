@@ -59,11 +59,11 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
 
     return hybrid_recommendations
 
-st.header("Content-Type")
+st.header("🎶 Music Recommendation System")
 text = st.selectbox(
     'Select music you want recommendation for', 
     music_df['Track Name'].values,
-    key='song_selector'
+    key='song_selector_2'
 )
 
 if st.button("Recommend", key="recommend_button"):
