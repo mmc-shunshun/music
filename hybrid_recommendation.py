@@ -31,6 +31,13 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     content_based_rec = content_based_recommendations(input_song_name,
                                                       num_recommendations)
 
+    content_based_rec = pd.merge(
+        content_based_rec,
+        music_df[['Track Name', 'External URLs']],
+        on='Track Name',
+        how='left'
+    )
+
     # Get the popularity score of the input song
     popularity_score = music_df.loc[music_df['Track Name'] == input_song_name,
                                     'Popularity'].values[0]
@@ -79,6 +86,10 @@ if st.button("🔍 Recommend"):
     df = hybrid_recommendations(selected_track)
 
     if not df.empty:
+        df['Track Name'] = df.apply(
+            lambda row: f"[{row['Track Name']}]({row['External URLs']})" if pd.notna(row['External URLs']) else row['Track Name'],
+            axis=1
+        )
         df.index = np.arange(1, len(df) + 1)
         df.index.name = "No."
         st.dataframe(df.style.format({"Popularity": "{:.2f}"}), use_container_width=True)
