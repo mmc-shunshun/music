@@ -5,6 +5,8 @@ import streamlit as st
 from contentbasedrecommendation import content_based_recommendations 
 
 music_df = pd.read_csv('music.csv')
+st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
+
 
 # Function to calculate weighted popularity scores based on release date
 def calculate_weighted_popularity(release_date):
@@ -65,8 +67,6 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
 
     return hybrid_recommendations
 
-st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
-
 st.markdown("<h1 style='text-align: center; color: #4A90E2;'>🎵 Intelligent Music Recommender</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'>Get personalized song recommendations based on your selection and popularity trends.</p>", unsafe_allow_html=True)
 st.markdown("---")
@@ -82,19 +82,21 @@ selected_track = st.selectbox(
 if st.button("🔍 Recommend"):
     st.markdown("#### 📃 Top Recommendations:")
     df = hybrid_recommendations(selected_track)
-    df['Track Name'] = df.apply(
-        lambda row: f"[{row['Track Name']}]({row['External URLs']})", axis=1
-    )
-
+    
     # Drop the raw URL column for display
     df_display = df.drop(columns=['External URLs'])
 
     if not df.empty:
-        df.index = np.arange(1, len(df) + 1)
-        df.index.name = "No."
-        st.dataframe(df.style.format({"Popularity": "{:.2f}"}), use_container_width=True)
-    else:
-        st.info("🤔 No recommendations found. Try selecting another song.")
+        df['Track Name'] = df.apply(
+            lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>', axis=1
+    )
+    df_display = df.drop(columns=['External URLs'])
+    df_display.index = np.arange(1, len(df_display) + 1)
+    df_display.index.name = "No."
+
+    st.markdown(df_display.to_html(escape=False, index=True), unsafe_allow_html=True)
+else:
+    st.info("🤔 No recommendations found. Try selecting another song.")
 
 # Footer
 st.markdown("---")
