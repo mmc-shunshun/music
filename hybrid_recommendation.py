@@ -20,7 +20,6 @@ def calculate_weighted_popularity(release_date):
     return weight
 
 # a function to get hybrid recommendations based on weighted popularity
-# a function to get hybrid recommendations based on weighted popularity
 def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     if input_song_name not in music_df['Track Name'].values:
         print(f"'{input_song_name}' not found in the dataset. Please enter a valid song name.")
@@ -44,7 +43,8 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         'Artists': [music_df.loc[music_df['Track Name'] == input_song_name, 'Artists'].values[0]],
         'Album Name': [music_df.loc[music_df['Track Name'] == input_song_name, 'Album Name'].values[0]],
         'Release Date': [music_df.loc[music_df['Track Name'] == input_song_name, 'Release Date'].values[0]],
-        'Popularity': [weighted_popularity_score]
+        'Popularity': [weighted_popularity_score],
+        'External URLs': [music_df.loc[music_df['Track Name'] == input_song_name, 'External URLs'].values[0]]
     })
 
     hybrid_recommendations = pd.concat([content_based_rec, weighted_pop_df], ignore_index=True)
@@ -56,8 +56,11 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
     # Remove the input song from the recommendations
     hybrid_recommendations = hybrid_recommendations[hybrid_recommendations['Track Name'] != input_song_name]
 
+    hybrid_recommendations['Track Name'] = hybrid_recommendations.apply(
+        lambda row: f'<a href="{row["External URLs"]}" target="_blank">{row["Track Name"]}</a>', axis=1
+    )
 
-    return hybrid_recommendations
+    return hybrid_recommendations[['Track Name', 'Artists', 'Album Name', 'Release Date', 'Popularity']]
 
 st.set_page_config(page_title="Music Recommender 🎧", layout="centered")
 
