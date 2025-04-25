@@ -44,8 +44,7 @@ def hybrid_recommendations(input_song_name, num_recommendations=5, alpha=0.5):
         'Artists': [music_df.loc[music_df['Track Name'] == input_song_name, 'Artists'].values[0]],
         'Album Name': [music_df.loc[music_df['Track Name'] == input_song_name, 'Album Name'].values[0]],
         'Release Date': [music_df.loc[music_df['Track Name'] == input_song_name, 'Release Date'].values[0]],
-        'Popularity': [weighted_popularity_score],
-        'External URLs': [music_df.loc[music_df['External URLs'] == input_song_name, 'External URLs'].values[0]],
+        'Popularity': [weighted_popularity_score]
 
     })
 
